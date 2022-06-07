@@ -1,6 +1,6 @@
 package it.units.server;
 
-import it.units.request.ComputationRequest;
+import it.units.request.ComputationRequestSolver;
 import it.units.request.StatisticalRequest;
 
 import java.io.*;
@@ -43,8 +43,7 @@ public class ClientHandler extends Thread {
                     // computation request
                     executorService.submit(() -> {
                         try {
-                            ComputationRequest computationRequest = new ComputationRequest(request);
-                            bw.write(computationRequest.getComputationRequest(request) + System.lineSeparator());
+                            bw.write(ComputationRequestSolver.solveComputationRequest(request) + System.lineSeparator());
                             bw.flush();
                         } catch (IOException e) {
                             System.err.printf("IOException: %s%n", e.getMessage());

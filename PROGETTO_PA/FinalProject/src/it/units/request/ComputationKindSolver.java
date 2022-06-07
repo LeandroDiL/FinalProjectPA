@@ -1,7 +1,7 @@
 package it.units.request;
 
-import it.units.exception.NoResultFoundException;
-import it.units.exception.VariableNotFoundException;
+import it.units.exceptions.NoResultFoundException;
+import it.units.exceptions.VariableNotFoundException;
 import it.units.expression.*;
 
 import java.util.ArrayList;
@@ -9,16 +9,16 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ComputationKindSolver {
-    private final ValuesKindSolver variables;
+    private final ValuesKindSolver solver;
     private final String[] equations;
 
-    public ComputationKindSolver(String[] equations, ValuesKindSolver variables) {
-        this.variables = variables;
+    public ComputationKindSolver(String[] equations, ValuesKindSolver solver) {
+        this.solver = solver;
         this.equations = equations;
     }
 
     public double calculateResult(ComputationKind computationRequest) throws VariableNotFoundException, NoResultFoundException {
-        double[][] solvedArray = new double[equations.length][variables.length()];
+        double[][] solvedArray = new double[equations.length][solver.getListSize()];
         for (int i = 0; i < equations.length; i++) {
             solvedArray[i] = solve(equations[i]);
         }
@@ -32,7 +32,7 @@ public class ComputationKindSolver {
     }
 
     private double findMin(double[][] arrayOfResults) throws NoResultFoundException {
-        List<Double> listOfAllResults = new ArrayList();
+        List<Double> listOfAllResults = new ArrayList<>();
         for (double[] arrayOfResult : arrayOfResults) {
             if (arrayOfResult.length != 0) {
                 for (double v : arrayOfResult) {
@@ -48,7 +48,7 @@ public class ComputationKindSolver {
     }
 
     private double findMax(double[][] arrayOfResults) throws NoResultFoundException {
-        List<Double> listOfAllResults = new ArrayList();
+        List<Double> listOfAllResults = new ArrayList<>();
         for (double[] arrayOfResult : arrayOfResults) {
             if (arrayOfResult.length != 0) {
                 for (double v : arrayOfResult) {
@@ -61,10 +61,6 @@ public class ComputationKindSolver {
         double[] arrayOfAllResults = getArrayFromList(listOfAllResults);
         Arrays.sort(arrayOfAllResults);
         return arrayOfAllResults[arrayOfAllResults.length - 1];
-    }
-
-    private double findCount() {
-        return variables.length();
     }
 
     private double findAverage(double[] result) {
@@ -82,31 +78,31 @@ public class ComputationKindSolver {
     private double[] solve(String equation) throws VariableNotFoundException {
         Parser parser = new Parser(equation);
         Node rootNode = parser.parse();
-        List<Double> result = new ArrayList<>();
+        List<Double> results = new ArrayList<>();
 
         if (rootNode instanceof Variable) {
-            for (double[] tuples : variables) {
-                result.add(solveVariableCase((Variable) rootNode, variables.getVariableNames(), tuples));
+            for (double[] tuples : solver) {
+                results.add(solveVariableCase((Variable) rootNode, solver.getVariableNames(), tuples));
             }
         } else if (rootNode instanceof Constant) {
-            for (int i = 0; i < variables.length(); i++) {
-                result.add(((Constant) rootNode).getValue());
+            for (int i = 0; i < solver.getListSize(); i++) {
+                results.add(((Constant) rootNode).getValue());
             }
         } else {
-            for (int i = 0, j = 0; j < variables.length(); j++, i++) {
+            for (int i = 0, j = 0; j < solver.getListSize(); j++, i++) {
                 double[] arr = new double[2];
                 try {
-                    result.add(solveNodeCase(rootNode, arr, variables.getVariableNames(), variables.getLine(j)));
+                    results.add(solveNodeCase(rootNode, arr, solver.getVariableNames(), solver.getLine(j)));
                 } catch (ArithmeticException e) {
                     i -= 1;
                 }
             }
         }
 
-        if (result.isEmpty()) {
+        if (results.isEmpty()) {
             return new double[0];
         }
-        return getArrayFromList(result);
+        return getArrayFromList(results);
     }
 
     private double solveNodeCase(Node node, double[] result, String[] variableName, double[] variableValue) throws VariableNotFoundException, ArithmeticException {

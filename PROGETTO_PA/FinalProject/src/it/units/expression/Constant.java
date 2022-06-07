@@ -1,7 +1,6 @@
 package it.units.expression;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 
 public class Constant extends Node {

@@ -1,21 +1,19 @@
 package it.units.request;
 
 
-import it.units.exception.OutOfRegexException;
-import it.units.exception.ParseErrorException;
-import it.units.exception.TupleSizeException;
+import it.units.exceptions.OutOfRegexException;
+import it.units.exceptions.ParseErrorException;
+import it.units.exceptions.TupleSizeException;
 
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ValuesKindSolver implements Iterable<double[]> {
-    private final String request;
     private List<double[]> listsOfTuples;
     private String[] variableNames;
 
     public ValuesKindSolver(String request, String variablesFunctions) throws ParseErrorException, TupleSizeException, OutOfRegexException {
-        this.request = request;
         switch (request) {
             case "GRID" -> listsOfTuples = getCartesianProduct(variablesFunctions);
             case "LIST" -> listsOfTuples = getListsMerging(variablesFunctions);
@@ -97,7 +95,7 @@ public class ValuesKindSolver implements Iterable<double[]> {
         return listOfTuples;
     }
 
-    public int length() {
+    public int getListSize() {
         return listsOfTuples.size();
     }
 

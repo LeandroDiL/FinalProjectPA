@@ -35,10 +35,6 @@ public class Parser {
             }
             return new Token(matcher.start(), matcher.end());
         }
-
-        public String getRegex() {
-            return regex;
-        }
     }
 
     private static class Token {

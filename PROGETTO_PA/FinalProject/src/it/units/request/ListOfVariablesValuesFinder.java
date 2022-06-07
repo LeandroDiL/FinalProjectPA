@@ -1,8 +1,8 @@
 package it.units.request;
 
-import it.units.exception.OutOfRegexException;
-import it.units.exception.ParseErrorException;
-import it.units.exception.TupleSizeException;
+import it.units.exceptions.OutOfRegexException;
+import it.units.exceptions.ParseErrorException;
+import it.units.exceptions.TupleSizeException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,7 @@ public class ListOfVariablesValuesFinder {
         this.request = request;
     }
 
-    public List getListOfTuples() throws ParseErrorException, TupleSizeException, OutOfRegexException {
+    public List<double[]> getListOfTuples() throws ParseErrorException, TupleSizeException, OutOfRegexException {
         String[] variableValuesFunctions = request.split(",");
 
         String[][] splittedVariableValues = new String[4][variableValuesFunctions.length];
@@ -27,9 +27,10 @@ public class ListOfVariablesValuesFinder {
                 splittedVariableValues[x][y] = tempSplittedVariableValues[x];
             }
         }
+
         variableNames = new String[variableValuesFunctions.length];
         int namesIndex = 0;
-        List listOfTuples = new ArrayList<double[]>();
+        List<double[]> listOfTuples = new ArrayList<>();
         for (int y = 0; y < variableValuesFunctions.length; y++) {
             double[] temp = new double[3];
             for (int x = 0; x < 4; x++) {
@@ -59,14 +60,15 @@ public class ListOfVariablesValuesFinder {
         String s = "" + doubles[0];
         String[] result = s.split("\\.");
         while ((doubles[0] + doubles[1] * k) < doubles[2]) {
-            functionA.add(returnRoundedValue(result[1].length(), doubles[0] + doubles[1] * k));
+            functionA.add(getRoundedValue(result[1].length(), doubles[0] + doubles[1] * k));
             k++;
         }
         functionA.add(doubles[0] + doubles[1] * k);
         return functionA.stream().mapToDouble(Double::doubleValue).toArray();
     }
 
-    private static double returnRoundedValue(int numberOfDigits, double value) {
+    //Method to avoid rounding issues during step application
+    private static double getRoundedValue(int numberOfDigits, double value) {
         double multiplier = 0.0;
         for (int i = 0; i < numberOfDigits; i++) {
             multiplier = multiplier + 10.0;

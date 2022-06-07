@@ -56,13 +56,10 @@ public class Operator extends Node {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("(");
-        sb.append(getChildren().stream()
-                .map(Node::toString)
-                .collect(Collectors.joining(" " + Character.toString(type.symbol) + " "))
-        );
-        sb.append(")");
-        return sb.toString();
+        return  "(" +
+                getChildren().stream()
+                        .map(Node::toString)
+                        .collect(Collectors.joining(" " + type.symbol + " ")) +
+                ")";
     }
 }
